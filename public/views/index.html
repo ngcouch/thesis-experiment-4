@@ -65,7 +65,7 @@
 		 if (condition == "incongruent") {similarity = 100-similarity}
 		 
 		 // setup the frame string
-		 frame = `<p style='text-align:left'>Suppose that you find out that ${animals[0]} and ${animals[1]} both produce the hormone ${hormone}.  You also know from experience that ${similarity}% of the time, if either ${animals[0]} or ${animals[1]} produce a particular hormone then the other does as well.</p> <p>How likely is it that all mammals produce hormone ${hormone}?</p>`
+		 frame = `<p style='text-align:left'>Suppose that your tests reveal that <b>${animals[0]}</b> and <b>${animals[1]}</b> both produce the hormone ${hormone}.  You also know from experience that <b>${similarity}%</b> of the time, if either ${animals[0]} or ${animals[1]} produce a particular hormone then the other does as well.</p> <p>How likely is it that all mammals produce hormone ${hormone}?</p>`
 
 		 return frame
 
@@ -86,7 +86,7 @@
 		 if (condition == "incongruent") {similarity = 100-similarity}
 		 
 		 // setup the frame string
-		 frame = `<p><b>Same information, different question</b></p><p style='text-align:left'>Suppose that you find out that ${animals[0]} and ${animals[1]} both produce the hormone ${hormone}.  You also know from experience that ${similarity}% of the time, if either ${animals[0]} or ${animals[1]} produce a particular hormone then the other does as well.</p><p>How good is your evidence that all mammals produce hormone ${hormone}?</p>`
+		 frame = `<p><b>Same information, different question</b></p><p style='text-align:left'>Suppose that your tests reveal that <b>${animals[0]}</b> and <b>${animals[1]}</b> both produce the hormone ${hormone}.  You also know from experience that <b>${similarity}%</b> of the time, if either ${animals[0]} or ${animals[1]} produce a particular hormone then the other does as well.</p><p>How good is your evidence that all mammals produce hormone ${hormone}?</p>`
 
 		 return frame
 
@@ -102,7 +102,7 @@
 
     timeline = []
 
-    var welcome = {type: "html-keyboard-respnse",
+    var welcome = {type: "html-keyboard-response",
 		   stimulus: "Welcome to this study, and thank you for your time! Please do not refresh the page or use the back button, as that will erase your progress in the experiment. Press space to continue.",
 		   choices: [32]
 		  }
@@ -111,7 +111,8 @@
 		   
     
     var instructions = {type: "html-keyboard-response",
-			stimulus: "<p style='text-align:left'>In this study, you will take the role of a researcher at a research zoo, investigating the distribution of different hormones among mammals. You will learn the results of various tests that you perform, and will be asked to make judgements about the distribution of various properties of the animals you are studying. Use whatever information you deem relevant, and make sure your judgements reflect your best effort. Thank you!</p>"}
+			stimulus: "<p style='text-align:left'>In this study, you will take on the role of a researcher at a zoo, investigating the distribution of different hormones among mammals. You will learn the results of various tests that you perform, and will be asked to make make judgements based on that information. Use whatever information you deem relevant, and make sure your judgements reflect your best effort. Press space to continue.</p>",
+			choices: [32]}
 
     timeline.push(instructions)
     timeline.push(block)
