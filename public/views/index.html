@@ -102,6 +102,14 @@
 
     timeline = []
 
+    var welcome = {type: "html-keyboard-respnse",
+		   stimulus: "Welcome to this study, and thank you for your time! Please do not refresh the page or use the back button, as that will erase your progress in the experiment. Press space to continue.",
+		   choices: [32]
+		  }
+
+    timeline.pish(welcome)
+		   
+    
     var instructions = {type: "html-keyboard-response",
 			stimulus: "<p style='text-align:left'>In this study, you will take the role of a researcher at a research zoo, investigating the distribution of different hormones among mammals. You will learn the results of various tests that you perform, and will be asked to make judgements about the distribution of various properties of the animals you are studying. Use whatever information you deem relevant, and make sure your judgements reflect your best effort. Thank you!</p>"}
 
