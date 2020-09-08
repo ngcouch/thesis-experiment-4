@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+
+    <script type="text/javascript" src="jsPsych/jspsych.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-survey-text.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-html-slider-response.js"></script>
+    <script type="text/javascript" src="experiment-data/pairs.js"></script>
+    <link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"/>
+
+  </head>
+  <body>
+  </body>
+
+  <script>
+
+    // Get participant information and save that information
+
+    var ID = window.prompt("Enter your participant ID:")
+    var unique_ID = jsPsych.randomization.randomID(6)
+
+    jsPsych.data.addProperties({PID: ID,
+				UID: unique_ID})
+
+
+    var low = pairs.filter(element => element.set == "low")
+    var high = pairs.filter(element => element.set == "high")
+
+
+    low = jsPsych.randomization.shuffle(low)
+    high = jsPsych.randomization.shuffle(high)
+
+    var low_congruent = low.slice(0, 5)
+    var low_incongruent = low.slice(5, 10)
+    var high_congruent = high.slice(0, 5)
+    var high_incongruent = high.slice(5, 10)
+
+
+    low_congruent.forEach(function(element) {element.condition = "congruent"})
+    high_congruent.forEach(function(element) {element.condition = "congruent"})
+    low_incongruent.forEach(function(element) {element.condition = "incongruent"})
+    high_incongruent.forEach(function(element) {element.condition = "incongruent"})
+
+    var pairs = [].concat(low_congruent, high_congruent, low_incongruent, high_incongruent)
+
+    pairs.forEach(function(element) {
+	element.question =jsPsych.randomization.shuffle(element.question.split("_")).join("_")
+    })
+
+    trial = [{type: "html-slider-response",
+	     stimulus: function() {
+
+		 // setup the needed variables and randomize premise order
+		 var animals = jsPsych.timelineVariable('question', true)
+		 animals = animals.split("_")
+		 var condition = jsPsych.timelineVariable('condition', true)
+		 var hormone = jsPsych.randomization.randomID(3).toUpperCase()
+		 var similarity = jsPsych.timelineVariable('response', true)
+
+		 // Convert similarity score into the incongruent string
+		 if (condition == "incongruent") {similarity = 100-similarity}
+		 
+		 // setup the frame string
+		 frame = `<p style='text-align:left'>Suppose that you find out that ${animals[0]} and ${animals[1]} both produce the hormone ${hormone}.  You also know from experience that ${similarity}% of the time, if either ${animals[0]} or ${animals[1]} produce a particular hormone then the other does as well.</p> <p>How likely is it that all mammals produce hormone ${hormone}?</p>`
+
+		 return frame
+
+	     },
+	     labels: ["Certainly not", "Certainly"],
+	     },
+	     {type: "html-slider-response",
+	     stimulus: function() {
+
+		 // setup the needed variables and randomize premise order
+		 var animals = jsPsych.timelineVariable('question', true)
+		 animals = animals.split("_")
+		 var condition = jsPsych.timelineVariable('condition', true)
+		 var hormone = jsPsych.randomization.randomID(3).toUpperCase()
+		 var similarity = jsPsych.timelineVariable('response', true)
+
+		 // Convert similarity score into the incongruent string
+		 if (condition == "incongruent") {similarity = 100-similarity}
+		 
+		 // setup the frame string
+		 frame = `<p><b>Same information, different question</b></p><p style='text-align:left'>Suppose that you find out that ${animals[0]} and ${animals[1]} both produce the hormone ${hormone}.  You also know from experience that ${similarity}% of the time, if either ${animals[0]} or ${animals[1]} produce a particular hormone then the other does as well.</p><p>How good is your evidence that all mammals produce hormone ${hormone}?</p>`
+
+		 return frame
+
+	     },
+	     labels: ["Not good at all", "Excellent"],
+	     }
+	     ]
+
+    var block = [{timeline:trial,
+		  timeline_variables: pairs,
+		  randomize_order: true}]
+
+
+    timeline = []
+
+    var instructions = {type: "html-keyboard-response",
+			stimulus: "<p style='text-align:left'>In this study, you will take the role of a researcher at a research zoo, investigating the distribution of different hormones among mammals. You will learn the results of various tests that you perform, and will be asked to make judgements about the distribution of various properties of the animals you are studying. Use whatever information you deem relevant, and make sure your judgements reflect your best effort. Thank you!</p>"}
+
+    timeline.push(instructions)
+    timeline.push(block)
+    timeline = timeline.flat(5)
+    
+
+    jsPsych.init({
+	timeline: timeline,
+	on_finish: function() {
+	    $.ajax({
+		type: "POST",
+		url: "/experiment-data",
+		data: jsPsych.data.get().json(),
+		contentType: "application/json"
+	    })
+		.done(function() {
+		    alert("Thank you!")
+		})
+		.fail(function() {
+		    alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
+		})
+	},
+	experiment_width: 800
+    })
+
+    </script>
+</html>

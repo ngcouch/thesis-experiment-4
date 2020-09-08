@@ -1,0 +1,32 @@
+trial = {type: "html-slider-response",
+	 stimulus: function() {
+
+
+	     // setup the needed variables and randomize premise order
+	     animals = jsPsych.timelineVariable('question', true)
+	     animals = animals.split("_")
+	     animals = jsPsych.randomization.shuffle(animals)
+	     condition = jsPsych.timelineVariable('condition', true)
+	     hormome = jsPsych.randomization.randomID(3).toUpperCase()
+	     similarity = jsPsych.timelineVariable('response', true)
+
+	     // Convert similarity score into the incongruent string
+	     if (condition == "incongruent") {similarity = 1-similarity}
+	     
+	     
+	     // setup the frame string
+
+	     frame = `Suppose that you find out that ${animals[0]} and ${animals[1] both produce the hormone ${hormone}, and that from your experience you know ${similarity}% of the time, if either ${animals[0]} or ${animals[1]} produce a hormone then the other does as well. How likely is it that all mammals produce hormone ${hormone}?`
+
+	     return frame
+
+	 },
+	 labels = ["Certainly not", "Certainly"],
+	 data: {condition: function() {jsPsych.timelineVariable('condition', true)},
+		similarity: function() {jsPsych.timelineVariable('similarity', true)}}
+	}
+
+block = {timeline: [trial],
+	 timeline_variables: pairs,
+	 randomize_order: true
+	}
